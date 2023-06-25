@@ -1,0 +1,78 @@
+--Create a table of "famous people"--
+CREATE TABLE famous_people (id INTEGER PRIMARY KEY AUTOINCREMENT, fullname TEXT, age INTEGER, occupation TEXT);
+
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Marie Shells", 23, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Jason Craws", 28, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("James Fall", 32, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Jells Mems", 37, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("El Moe", 35, "Director");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Ube Boa", 27, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Dannell Meep", 22, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Jess Hew", 23, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Herrburt Salls", 22, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Hallie Drew", 53, "Director");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Messa Jane", 47, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Boo Ty", 25, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Chell Ies", 38, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Don Alds", 55, "Director");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Court Knees", 32, "Actor");
+
+--Create a table of the "works" of the "famous people"
+CREATE TABLE movie_projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, year INTEGER, lead_writer_id INTEGER, director_id INTEGER, lead_actor_id INTEGER);
+
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("The Boat Sank", 2001, 7, 10, 2);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("Well, You Know?", 1998, 4, 5, 8);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("Oh NO! Masks!", 2018, 13, 10, 15);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("Make Me!", 2009, 11, 5, 1);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("That's Just How It Is", 1999, 13, 14, 9);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("They Didn't Tell Me Not To", 2011, 4, 5, 12);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("How", 2012, 7, 14, 3);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("I Like the Tuesdays", 2019, 13, 10, 6);
+
+--Display of orginal tables--
+SELECT * FROM famous_people;
+SELECT * FROM movie_projects;
+
+
+CREATE TABLE famous_people (id INTEGER PRIMARY KEY AUTOINCREMENT, fullname TEXT, age INTEGER, occupation TEXT);
+
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Marie Shells", 23, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Jason Craws", 28, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("James Fall", 32, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Jells Mems", 37, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("El Moe", 35, "Director");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Ube Boa", 27, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Dannell Meep", 22, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Jess Hew", 23, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Herrburt Salls", 22, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Hallie Drew", 53, "Director");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Messa Jane", 47, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Boo Ty", 25, "Actor");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Chell Ies", 38, "Writer");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Don Alds", 55, "Director");
+INSERT INTO famous_people (fullname, age, occupation) VALUES ("Court Knees", 32, "Actor");
+
+CREATE TABLE movie_projects (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, year INTEGER, lead_writer_id INTEGER, director_id INTEGER, lead_actor_id INTEGER);
+
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("The Boat Sank", 2001, 7, 10, 2);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("Well, You Know?", 1998, 4, 5, 8);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("Oh NO! Masks!", 2018, 13, 10, 15);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("Make Me!", 2009, 11, 5, 1);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("That's Just How It Is", 1999, 13, 14, 9);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("They Didn't Tell Me Not To", 2011, 4, 5, 12);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("How", 2012, 7, 14, 3);
+INSERT INTO movie_projects (title, year, lead_writer_id, director_id, lead_actor_id) VALUES ("I Like the Tuesdays", 2019, 13, 10, 6);
+
+SELECT * FROM famous_people;
+SELECT * FROM movie_projects;
+
+--Movies and years with lead writer, director, and lead actor listed--
+SELECT movie_projects.title, movie_projects.year, a.fullname, b.fullname, c.fullname
+    FROM movie_projects
+    JOIN famous_people a
+        ON movie_projects.lead_writer_id = a.id
+    JOIN famous_people b
+        ON movie_projects.director_id = b.id
+    JOIN famous_people c
+        ON movie_projects.lead_actor_id = c.id
+    ORDER BY year;
