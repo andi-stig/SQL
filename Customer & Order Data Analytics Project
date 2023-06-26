@@ -31,7 +31,7 @@ SELECT distinct customers.acctnum
     INNER JOIN BIT_DB.FebSales FebSales
     ON customers.order_id = FebSales.orderID
         WHERE length(customers.order_id) = 6
-        AND customers.order_id <> 'Order ID'
+        AND customers.order_id <> 'Order ID';
 
 -- Cheapest product, with price, sold in Jan--
 SELECT distinct Product, price
@@ -41,13 +41,13 @@ SELECT distinct Product, price
 --Total revenue for each product sold in Jan--
 SELECT Product, SUM(quantity)*price AS revenue
     FROM BIT_DB.JanSales
-    GROUP BY Product
+    GROUP BY Product;
     
 --Products, number of products, and total revenue sold in Feb at 548 Lincoln St, Seattle, WA 98101--
 SELECT Product, SUM(Quantity) AS quantity, SUM(quantity)*price AS revenue
     FROM BIT_DB.FebSales
     WHERE location = '548 Lincoln St, Seattle, WA 98101'
-    GROUP BY Product
+    GROUP BY Product;
     
 
 --Number of customers who ordered more than 2 products at a time in Feb, and the average amount spent for these customers--
@@ -57,10 +57,58 @@ SELECT COUNT(distinct customers.acctnum), AVG(price*Quantity)
     ON FebSales.orderid=customers.order_id
         WHERE FebSales.Quantity > 2
         AND length(FebSales.orderid) = 6 
-        AND FebSales.orderid <> 'Order ID'
+        AND FebSales.orderid <> 'Order ID';
 
 --Products and quantities sold in Los Angeles in Feb--
 SELECT Product, SUM(Quantity) as Quantity
     FROM BIT_DB.FebSales
     WHERE location like '%Los Angeles%'
     GROUP BY Product;
+
+--Locations in New York with at least 3 orders in Jan with order ammounts--
+SELECT distinct location,COUNT(orderID)
+    FROM BIT_DB.JanSales
+        WHERE location like '%NY%'
+         AND length(orderID) = 6
+         AND orderID <> 'Order ID'
+     GROUP BY location
+     HAVING COUNT(orderID) >=3;
+    
+--Each type of headphones sold in Feb and the qantity of each--
+SELECT Product, SUM(Quantity) as Quantity
+    FROM BIT_DB.FebSales
+    WHERE product like '%Headphones%'
+    GROUP BY product;
+    
+--Avg amount spent per account in Feb--
+SELECT AVG(FebSales.Quantity * FebSales.price)
+    FROM BIT_DB.FebSales FebSales
+    LEFT JOIN BIT_DB.customers customers
+    ON FebSales.orderID = customers.order_id
+    WHERE length(customers.order_id) =6
+    AND customers.order_id <> 'Order ID';
+
+--Each accounts avg spent in FEB--
+SELECT customers.acctnum, AVG(FebSales.Quantity * FebSales.price)
+    FROM BIT_DB.FebSales FebSales
+    LEFT JOIN BIT_DB.customers customers
+    ON FebSales.orderID = customers.order_id
+    WHERE length(customers.order_id) =6
+    AND customers.order_id <> 'Order ID'
+    GROUP BY customers.acctnum;
+
+--Avg quanty of producs purchased per account in FEB--
+SELECT SUM(FebSales.Quantity)/COUNT(customers.acctnum)
+    FROM BIT_DB.FebSales FebSales
+    LEFT JOIN BIT_DB.customers
+    ON FebSales.orderID = customers.order_id
+    WHERE length(customers.order_id) =6
+    AND customers.order_id <> 'Order ID';
+
+--The product that brough in the most revenue in Jan and the revenue ammount--
+SELECT Product, SUM(Quantity*price)AS revenue
+    FROM BIT_DB.JanSales
+    GROUP BY Product
+    ORDER BY revenue desc
+    LIMIT 1;
+
