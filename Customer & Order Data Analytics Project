@@ -58,3 +58,9 @@ SELECT COUNT(distinct customers.acctnum), AVG(price*Quantity)
         WHERE FebSales.Quantity > 2
         AND length(FebSales.orderid) = 6 
         AND FebSales.orderid <> 'Order ID'
+
+--Products and quantities sold in Los Angeles in Feb--
+SELECT Product, SUM(Quantity) as Quantity
+    FROM BIT_DB.FebSales
+    WHERE location like '%Los Angeles%'
+    GROUP BY Product;
