@@ -65,3 +65,13 @@ SELECT distinct artist_name, ROUND(AVG(duration_ms)) as avg_duration
     GROUP BY artist_name
     ORDER BY AVG(duration_ms);
 
+--aritist with an avg popularity score of 90 or more in listed as a Top Star--
+WITH populartiy_avg_CTE AS (
+    SELECT spotify.artist_name, AVG(spotify.popularity) as avg_populartiy
+    FROM Spotifydata spotify
+    GROUP BY spotify.artist_name )
+
+SELECT artist_name, avg_populartiy,  'Top Star' AS tag
+    FROM populartiy_avg_CTE
+    WHERE avg_populartiy>=90;
+
