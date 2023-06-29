@@ -1,0 +1,131 @@
+--In this SQL, I'm querying a database with multiple tables in it to quantify statistics about a music shop.--
+
+-- Customers who are not in the US with one collumn for full name --
+SELECT customerId, FirstName || ' ' || LastName as FullName, Country
+    FROM chinook.customers
+    WHERE country <> 'USA';
+    
+--Customers who are only from Brazil--
+SELECT customerId, FirstName || ' ' || LastName as FullName, Country
+    FROM chinook.customers
+    WHERE country = 'Brazil';
+
+--The invoices from the customers who are from Brazil--
+SELECT customers.FirstName || ' ' || customers.LastName as FullName, invoices.InvoiceId, invoices.InvoiceDate, invoices.BillingCountry 
+    FROM chinook.customers as customers
+        LEFT JOIN chinook.invoices as invoices
+            ON customers.customerId = invoices.CustomerId
+    WHERE customers.Country = 'Brazil';
+    
+--Employees who are sales support agents--
+SELECT employeeID, LastName, FirstName, Title
+    FROM chinook.employees 
+    WHERE title = 'Sales Support Agent';
+    
+-- Distinct billing contries--
+SELECT distinct BillingCountry
+    FROM chinook.invoices;
+
+-- sales agent with associated invoices sorted by date with totals--
+WITH supportRep_CTE AS (
+    SELECT employees.LastName || ', ' || employees.Firstname as FullName, customers.CustomerId
+    FROM customers 
+    LEFT JOIN employees
+    ON customers.SupportRepId = employees.EmployeeId
+)    
+
+SELECT supportRep_CTE.FullName, invoices.InvoiceId, invoices.InvoiceDate, invoices.Total
+    FROM supportRep_CTE
+        LEFT JOIN chinook.invoices invoices
+            ON supportRep_CTE.CustomerID = invoices.CustomerId
+    Order By invoices.InvoiceDate;
+    
+-- Invoice total, customer name, country, and sales agent for all invoices--
+SELECT invoices.InvoiceId, customers.FirstName || ' ' || customers.LastName as Customer_FullName, invoices.BillingCountry, invoices.Total, employees.LastName || ', ' || employees.Firstname as SalesRep
+    FROM chinook.invoices invoices
+    LEFT JOIN chinook.customers customers
+        ON invoices.CustomerId = customers.CustomerId
+    LEFT JOIN chinook.employees employees
+        ON customers.SupportRepId = employees.EmployeeId;
+        
+-- Number of invoices were there in 2009--
+SELECT COUNT(*) 
+    FROM chinook.invoices
+    WHERE invoices.InvoiceDate like '2009%';
+    
+-- Total sales for 2009)--
+SELECT SUM(Total) as Total_2009_Sales
+    FROM chinook.invoices
+    WHERE invoices.InvoiceDate like '2009%';
+    
+-- Each purchased track name with the associated invoice ID--
+SELECT tracks.Name, items.InvoiceId
+    FROM chinook.invoice_items items
+        Left JOIN chinook.tracks tracks
+            ON items.TrackId = tracks.TrackId
+    ORDER BY tracks.Name;
+    
+--Each purchased track name with artist and associated ID--
+SELECT items.InvoiceId, tracks.Name as Track, artists.Name
+    FROM chinook.invoice_items items
+    Left JOIN chinook.tracks tracks
+        ON items.TrackId = tracks.TrackId
+    Left JOIN chinook.albums albums
+        ON tracks.AlbumId = albums.AlbumId
+    Left JOIN chinook.artists artists
+        ON albums.ArtistId = artists.ArtistId;
+
+--All tracks with artist name, album name, media type, and genre ordered by album--
+SELECT tracks.name as Track, artists.Name as Artist,albums.Title as Album_Title, media.Name as Media_Type, genres.Name as Genre
+    FROM chinook.tracks tracks
+        Left JOIN chinook.albums albums
+            ON tracks.AlbumId = albums.AlbumId
+        Left JOIN chinook.artists artists
+             ON albums.ArtistId = artists.ArtistId
+        Left JOIN chinook.media_types media
+             ON tracks.MediaTypeId = media.MediaTypeId
+        Left JOIN chinook.genres genres
+             ON tracks.GenreId = genres.GenreId
+    Order by albums.Title;
+    
+-- Total sales and number of sales for each sales rep--
+SELECT employees.LastName || ', ' || employees.Firstname as SalesRep, COUNT(invoices.InvoiceId) as Total_Invoices, SUM(invoices.Total) as Total_Sales
+    FROM chinook.invoices invoices
+        LEFT JOIN chinook.customers customers
+            ON invoices.CustomerId = customers.CustomerId
+        LEFT JOIN chinook.employees employees
+            ON customers.SupportRepId = employees.EmployeeId
+    Group by employees.LastName;
+
+-- Avg sales per invoice for each sales rep--
+SELECT employees.LastName || ', ' || employees.Firstname as SalesRep, Avg(invoices.Total) as Avg_Sales
+    FROM chinook.invoices invoices
+        LEFT JOIN chinook.customers customers
+            ON invoices.CustomerId = customers.CustomerId
+        LEFT JOIN chinook.employees employees
+            ON customers.SupportRepId = employees.EmployeeId
+    Group by employees.LastName;
+
+-- Which sales rep made the most dollars in sales in 2009--
+SELECT employees.LastName || ', ' || employees.Firstname as SalesRep, ROUND(SUM(invoices.Total), 2) as Total_Sales
+    FROM chinook.invoices invoices
+        LEFT JOIN chinook.customers customers
+            ON invoices.CustomerId = customers.CustomerId
+        LEFT JOIN chinook.employees employees
+            ON customers.SupportRepId = employees.EmployeeId
+    WHERE invoices.InvoiceDate like '2009%'
+    Group by employees.LastName
+    Order by Total_Sales desc
+    LIMIT 1;
+    
+-- Each employee and their direct mgr with mgr's phone number and email--
+WITH MGR_Info_CTE AS (
+SELECT EmployeeId, Firstname, Phone, Email
+    FROM employees
+)
+
+SELECT employee.LastName || ', ' || employee.Firstname as Employee, mgr.Firstname as Direct_MGR, mgr.Phone as MGR_Phone, mgr.Email as MGR_Email
+    FROM employees employee
+    Left JOIN MGR_Info_CTE mgr
+    ON employee.ReportsTo = mgr.EmployeeId
+    Order by Direct_MGR;
