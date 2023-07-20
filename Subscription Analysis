@@ -1,0 +1,69 @@
+--Brands with no blank info and no NULLs--
+SELECT *
+FROM brands_data
+WHERE industry_categories != '[]' 
+    AND bantScore IS NOT NULL 
+    AND companySize IS NOT NULL
+    AND onboarding_stage IS NOT NULL
+    AND country IS NOT NULL;
+    
+SELECT COUNT(*)
+FROM brands_data
+WHERE industry_categories != '[]' 
+    AND bantScore IS NOT NULL 
+    AND companySize IS NOT NULL
+    AND onboarding_stage IS NOT NULL
+    AND country IS NOT NULL;
+
+--Count of plans upgraded to paid subscriptions--
+SELECT COUNT(*)
+FROM brands_data
+WHERE planLevel >= 1;
+
+--Brands with paid subscriptions--
+SELECT *
+FROM brands_data
+WHERE planLevel >= 1;
+
+--Brands without paid subscription--
+SELECT *
+FROM brands_data
+WHERE planLevel = 0;
+
+--Number of Brands that have not completed onboarding--
+/*without paid subscriotion*/
+SELECT COUNT(*)
+FROM brands_data
+WHERE planLevel = 0 AND (onboarding_stage != 4 OR onboarding_stage IS NULL);
+/*with paid subbscription*/
+SELECT COUNT(*)
+FROM brands_data
+WHERE planLevel >= 1 AND (onboarding_stage != 4 OR onboarding_stage IS NULL)
+
+--Number of brands without bantScore--
+/*without paid subscriotion*/
+SELECT COUNT(*)
+FROM brands_data
+WHERE planLevel = 0 AND bantScore IS NULL; 
+/*with paid subbscription*/
+SELECT COUNT(*)
+FROM brands_data
+WHERE planLevel >= 1 AND bantScore IS NULL;
+
+--Brands notated with subscription status, qaulificatoin score status, and onboarding status--
+SELECT brand_id,  
+    CASE  
+        WHEN planLevel = 0 THEN 'Unsubcribed'
+        ELSE 'Subscribed'
+    END AS 'PaidSubscriptionStatus',
+    CASE
+        WHEN bantScore IS NULL THEN 'Not Scored'
+        ELSE 'Scored'
+    END AS 'QaulificatoinScoreStatus',
+    CASE
+        WHEN onboarding_stage = 0 THEN'Not Started'
+        WHEN onboarding_stage > 0 and onboarding_stage < 4 THEN 'In Progress'
+        WHEN onboarding_stage = 4 THEN 'Completed'
+        ELSE 'Unknown'
+    END AS 'OnboardingStatus'
+FROM brands_data;
