@@ -1,0 +1,177 @@
+--Table with all pontential analytical data in one place with the tables joined at the user IDs--
+SELECT users.user_id, 
+users.planLevel,
+users.created,
+campaigns.campaign_id,
+campaigns.created,
+campaigns.published, 
+campaigns.payment, 
+campaigns.isUnpublished
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id;
+    
+--brands that published campaigns vs. did not publish any campaign within each plan level--
+/*Plan level 0 published and not published*/
+SELECT 
+CASE 
+    WHEN campaigns.isUnpublished = 'FALSE' THEN 'Published'
+    ELSE 'Unpublished'
+END as Published,
+COUNT(DISTINCT users.user_id) as Brands
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE users.planLevel = 0
+    GROUP BY campaigns.isUnpublished;
+
+SELECT 
+    (CAST((SELECT COUNT(DISTINCT users.user_id) 
+        FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 0 AND campaigns.isUnpublished = 'FALSE') 
+        AS FLOAT) / 
+     CAST((SELECT COUNT(DISTINCT users.user_id) 
+         FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 0 AND campaigns.isUnpublished = 'TRUE') AS FLOAT)) 
+AS ratioPublishedUnpublished;
+    
+/*Plan level 1 published and not published*/
+SELECT 
+CASE 
+    WHEN campaigns.isUnpublished = 'FALSE' THEN 'Published'
+    ELSE 'Unpublished'
+END as Published,
+COUNT(DISTINCT users.user_id) as Brands
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE users.planLevel = 1
+    GROUP BY campaigns.isUnpublished;
+
+SELECT 
+    (CAST((SELECT COUNT(DISTINCT users.user_id) 
+        FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 1 AND campaigns.isUnpublished = 'FALSE') 
+        AS FLOAT) / 
+     CAST((SELECT COUNT(DISTINCT users.user_id) 
+         FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 1 AND campaigns.isUnpublished = 'TRUE') AS FLOAT)) 
+AS ratioPublishedUnpublished;
+
+/*Plan level 2 published and not published*/
+SELECT 
+CASE 
+    WHEN campaigns.isUnpublished = 'FALSE' THEN 'Published'
+    ELSE 'Unpublished'
+END as Published,
+COUNT(DISTINCT users.user_id) as Brands
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE users.planLevel = 2
+    GROUP BY campaigns.isUnpublished;
+
+SELECT 
+    (CAST((SELECT COUNT(DISTINCT users.user_id) 
+        FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 2 AND campaigns.isUnpublished = 'FALSE') 
+        AS FLOAT) / 
+     CAST((SELECT COUNT(DISTINCT users.user_id) 
+         FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 2 AND campaigns.isUnpublished = 'TRUE') AS FLOAT)) 
+AS ratioPublishedUnpublished;
+
+/*Plan level 3 published and not published*/
+SELECT 
+CASE 
+    WHEN campaigns.isUnpublished = 'FALSE' THEN 'Published'
+    ELSE 'Unpublished'
+END as Published,
+COUNT(DISTINCT users.user_id) as Brands
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE users.planLevel = 3
+    GROUP BY campaigns.isUnpublished;
+
+SELECT 
+    (CAST((SELECT COUNT(DISTINCT users.user_id) 
+        FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 3 AND campaigns.isUnpublished = 'FALSE') 
+        AS FLOAT) / 
+     CAST((SELECT COUNT(DISTINCT users.user_id) 
+         FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 3 AND campaigns.isUnpublished = 'TRUE') AS FLOAT)) 
+AS ratioPublishedUnpublished;
+
+/*Plan level 9 published and not published*/
+SELECT 
+CASE 
+    WHEN campaigns.isUnpublished = 'FALSE' THEN 'Published'
+    ELSE 'Unpublished'
+END as Published,
+COUNT(DISTINCT users.user_id) as Brands
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE users.planLevel = 9
+    GROUP BY campaigns.isUnpublished;
+
+SELECT 
+    (CAST((SELECT COUNT(DISTINCT users.user_id) 
+        FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 9 AND campaigns.isUnpublished = 'FALSE') 
+        AS FLOAT) / 
+     CAST((SELECT COUNT(DISTINCT users.user_id) 
+         FROM OpenSponsorship.users_data users
+            JOIN OpenSponsorship.campaigns_data campaigns
+                ON users.user_id = campaigns.user_id 
+                WHERE users.planLevel = 9 AND campaigns.isUnpublished = 'TRUE') AS FLOAT)) 
+AS ratioPublishedUnpublished;
+
+--Count of brands that continued to create campaigns after their first published one--
+SELECT 
+    DISTINCT campaigns.user_id AS brands,
+    COUNT(DISTINCT campaigns.created) AS campaignCount
+FROM OpenSponsorship.campaigns_data campaigns
+    WHERE campaigns.isUnpublished = 'FALSE'
+    GROUP BY campaigns.user_id
+    HAVING COUNT(DISTINCT campaigns.created) > 1
+    ORDER BY campaignCount DESC;
+    
+--Time it takes for new brands to publish a campaign--
+SELECT
+    users.user_id AS brands,
+    users.created AS accountCreated,
+    campaigns.published AS campaignPublished,
+    ROUND(julianday(campaigns.published) - julianday(users.created)) as daysToPublish
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE campaigns.published NOTNULL AND daysToPublish NOTNULL;
+ /*Avereage days with the available information*/   
+SELECT
+    AVG(ROUND(julianday(campaigns.published) - julianday(users.created))) as agvDaysToPublish
+FROM OpenSponsorship.users_data users
+    JOIN OpenSponsorship.campaigns_data campaigns
+    ON users.user_id = campaigns.user_id
+    WHERE campaigns.published NOTNULL
+    HAVING julianday(campaigns.published) - julianday(users.created) NOTNULL;
