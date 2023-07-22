@@ -1,0 +1,184 @@
+--Data without NULL and incomplete informaiotn--
+SELECT *
+FROM AthleteSearch_data
+    WHERE minPrice is NOT NULL
+        AND maxPrice is NOT NULL
+        AND view_id is NOT NULL
+        AND user is NOT NULL
+        AND path is NOT NULL
+        AND entity is NOT NULL
+        AND view_created is NOT NULL
+        AND athlete_userID is NOT NULL
+        AND athlete_profileID is NOT NULL
+        AND athlete_name_y is NOT NULL;
+
+--Trends for Plan Level 0--
+/*Plan Level 0 Data*/
+SELECT *
+    FROM AthleteSearch_data
+        WHERE planLevel = 0;
+/*count of view_ids vs null view_ids*/
+SELECT COUNT(distinct view_id) as vallidViewID,
+        COUNT( view_id is NULL) as nullViewID
+FROM AthleteSearch_data
+    WHERE planLevel = 0;
+/*Count of athletes searched by Plan levle 0*/
+SELECT athlete_name_y as athleteName,
+    COUNT (distinct search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 0
+    AND athlete_name_y is not NULL
+    GROUP BY athlete_name_y
+    ORDER BY COUNT (distinct search_id) desc;
+/*Count of plaths searched by Plan level 0*/    
+SELECT path,
+    COUNT (distinct search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 0
+    AND athlete_name_y is not NULL
+    GROUP BY athlete_name_y
+    ORDER BY COUNT (distinct search_id) desc;
+/*Number of searches per date for Plan level 0*/    
+SELECT 
+    DATE(date) as date,
+    COUNT(search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 0
+    AND DATE(date) is NOT NULL
+    GROUP BY DATE(date)
+    ORDER BY (COUNT(search_id))desc;
+/*Searches vs completed views for brands in Plan Level 0*/
+SELECT
+    brand_userID as brands,
+    COUNT(search_id) as numberOfSearches,
+    COUNT(view_id) as numberOfViewsMade
+FROM AthleteSearch_data
+    WHERE planLevel = 0
+    GROUP BY brand_userID;
+/*Avg searches vs avg completed views per brand in Plan level 0*/
+WITH searches_vs_views as(
+    SELECT
+        brand_userID as brands,
+        COUNT(search_id) as numberOfSearches,
+        COUNT(view_id) as numberOfViewsMade
+    FROM AthleteSearch_data
+        WHERE planLevel = 0
+        GROUP BY brand_userID)
+SELECT 
+    AVG(numberOfSearches) as avgSearches,
+    AVG(numberOfViewsMade) as avgCompletedViews
+FROM searches_vs_views;
+
+--Trends for Plan Level 3--
+/*Plan Level 3 Data*/
+SELECT *
+    FROM AthleteSearch_data
+        WHERE planLevel = 3;
+/*count of view_ids vs null view_ids*/
+SELECT COUNT(distinct view_id) as vallidViewID,
+        COUNT( view_id is NULL) as nullViewID
+FROM AthleteSearch_data
+    WHERE planLevel = 3;
+/*Count of athletes searched by Plan level 3*/
+SELECT athlete_name_y as athleteName,
+    COUNT (distinct search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 3
+    AND athlete_name_y is not NULL
+    GROUP BY athlete_name_y
+    ORDER BY COUNT (distinct search_id) desc;
+/*Count of plaths searched by Plan level 3*/    
+SELECT path,
+    COUNT (distinct search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 3
+    AND athlete_name_y is not NULL
+    GROUP BY athlete_name_y
+    ORDER BY COUNT (distinct search_id) desc;
+/*Number of searches per date for Plan level 3*/    
+SELECT 
+    DATE(date) as date,
+    COUNT(search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 3
+    AND DATE(date) is NOT NULL
+    GROUP BY DATE(date)
+    ORDER BY (COUNT(search_id))desc;
+/*Searches vs completed views for brands in Plan Level 3*/
+SELECT
+    brand_userID as brands,
+    COUNT(search_id) as numberOfSearches,
+    COUNT(view_id) as numberOfViewsMade
+FROM AthleteSearch_data
+    WHERE planLevel = 3
+    GROUP BY brand_userID;
+/*Avg searches vs avg completed views per brand in Plan level 3*/
+WITH searches_vs_views as(
+    SELECT
+        brand_userID as brands,
+        COUNT(search_id) as numberOfSearches,
+        COUNT(view_id) as numberOfViewsMade
+    FROM AthleteSearch_data
+        WHERE planLevel = 3
+        GROUP BY brand_userID)
+SELECT 
+    AVG(numberOfSearches) as avgSearches,
+    AVG(numberOfViewsMade) as avgCompletedViews
+FROM searches_vs_views;
+
+--Trends for Plan Level 9--
+/*Plan Level 9 Data*/
+SELECT *
+    FROM AthleteSearch_data
+        WHERE planLevel = 9;
+/*count of view_ids vs null view_ids*/
+SELECT COUNT(distinct view_id) as vallidViewID,
+        COUNT( view_id is NULL) as nullViewID
+FROM AthleteSearch_data
+    WHERE planLevel = 9;
+/*Count of athletes searched by Plan level 9*/
+SELECT athlete_name_y as athleteName,
+    COUNT (distinct search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 9
+    AND athlete_name_y is not NULL
+    GROUP BY athlete_name_y
+    ORDER BY COUNT (distinct search_id) desc;
+/*Count of plaths searched by Plan level 9*/    
+SELECT path,
+    COUNT (distinct search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 9
+    AND athlete_name_y is not NULL
+    GROUP BY athlete_name_y
+    ORDER BY COUNT (distinct search_id) desc;
+/*Number of searches per date for Plan level 9*/    
+SELECT 
+    DATE(date) as date,
+    COUNT(search_id) as numberOfSearches
+FROM AthleteSearch_data
+    WHERE planLevel = 9
+    AND DATE(date) is NOT NULL
+    GROUP BY DATE(date)
+    ORDER BY (COUNT(search_id))desc;
+/*Searches vs completed views for brands in Plan Level 9*/
+SELECT
+    brand_userID as brands,
+    COUNT(search_id) as numberOfSearches,
+    COUNT(view_id) as numberOfViewsMade
+FROM AthleteSearch_data
+    WHERE planLevel = 9
+    GROUP BY brand_userID;
+/*Avg searches vs avg completed views per brand in Plan level 9*/
+WITH searches_vs_views as(
+    SELECT
+        brand_userID as brands,
+        COUNT(search_id) as numberOfSearches,
+        COUNT(view_id) as numberOfViewsMade
+    FROM AthleteSearch_data
+        WHERE planLevel = 9
+        GROUP BY brand_userID)
+SELECT 
+    AVG(numberOfSearches) as avgSearches,
+    AVG(numberOfViewsMade) as avgCompletedViews
+FROM searches_vs_views;
